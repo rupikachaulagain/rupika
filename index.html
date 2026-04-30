@@ -3,129 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rupika Chaulagain | The Himalayan Ascent</title>
+    <title>Rupika Chaulagain | Interactive Portfolio</title>
     
-    <!-- Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
     
-    <!-- GSAP & Three.js Engines -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.156.1/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
-<body>
-    <!-- Immersive 3D Background -->
-    <canvas id="canvas-3d"></canvas>
+<body class="lang-en">
+    
+    <!-- 3D Environment -->
+    <canvas id="webgl-canvas"></canvas>
+    
+    <!-- UI Overlay -->
+    <div class="hud">
+        <div class="lang-switcher interactive">
+            <span class="lang-btn active" data-lang="en">EN</span>
+            <span class="lang-btn" data-lang="fr">FR</span>
+        </div>
+    </div>
 
     <!-- Custom Cursor -->
-    <div class="cursor-follower"></div>
     <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
 
-    <main id="smooth-wrapper">
-        <div id="smooth-content">
+    <!-- Scroll Content -->
+    <div id="scroll-container">
+        
+        <!-- INTRO / HERO -->
+        <section class="section hero">
+            <div class="content-block glass-panel">
+                <h1 class="glitch-text" data-text="Rupika Chaulagain">Rupika Chaulagain</h1>
+                <div class="contact-info">
+                    <p>10 rue Pierre Curie, Valence, France</p>
+                    <p>07 53 39 21 78 | <a href="mailto:rupika.chaulagain@gmail.com" class="interactive">rupika.chaulagain@gmail.com</a></p>
+                    <p><a href="#" class="interactive">LinkedIn</a></p>
+                </div>
+                <div class="bio">
+                    <p class="en">A highly driven Grande École graduate specializing in financial planning and operational support. With international, cross-functional experience across Europe and South Asia, I excel at coordinating between departments and driving strategic KPIs.</p>
+                    <p class="fr">Diplômée du Programme Grande École avec une expertise en planification financière et en fonctions de support opérationnel. Forte d'une expérience en environnements internationaux et transversaux en Europe et en Asie du Sud, j'excelle dans la coordination entre différents départements et interlocuteurs.</p>
+                </div>
+                <div class="scroll-indicator">
+                    <span class="en">Initiate Ascent</span>
+                    <span class="fr">Initier l'Ascension</span>
+                    <div class="arrow">↓</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section class="section experience">
+            <h2 class="section-title en">Professional Ascent</h2>
+            <h2 class="section-title fr">Expérience Professionnelle</h2>
             
-            <!-- Hero Section: The Foothills -->
-            <section class="hero panel">
-                <div class="hero-bg" style="background-image: url('assets/hero.png');"></div>
-                <div class="hero-container">
-                    <p class="tagline fade-in">Based in Valence, France</p>
-                    <h1 class="title split-text">Rupika<br>Chaulagain</h1>
-                    <p class="subtitle fade-in">Orchestrating Financial Planning & Global Operations</p>
-                    <div class="scroll-prompt fade-in">
-                        <span class="line"></span>
-                        <span class="text">Begin the Ascent</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Pathway Section: The Trek -->
-            <section class="pathway panel">
-                <div class="section-header">
-                    <span class="label">Experience</span>
-                    <h2 class="section-title">The Ascent</h2>
+            <div class="timeline">
+                <!-- GE Healthcare -->
+                <div class="timeline-node interactive glass-panel">
+                    <div class="node-date">Jul 2025 — Jan 2026</div>
+                    <h3 class="node-company">GE Healthcare <span class="loc">Buc, France</span></h3>
+                    <h4 class="node-role en">FP&A Treasury Analyst</h4>
+                    <h4 class="node-role fr">Analyste de trésorerie FP&A</h4>
+                    <ul class="node-details en">
+                        <li><strong>Support & Coordination:</strong> Assisted financial planning and created an administrative hub with the Chief of Staff.</li>
+                        <li><strong>Strategic Reporting:</strong> Led weekly cash calls and prepared performance tracking presentations.</li>
+                        <li><strong>Operational Rigor:</strong> Supervised FBL transactions, reducing bad debt exposure by 30%.</li>
+                    </ul>
+                    <ul class="node-details fr">
+                        <li><strong>Support et Coordination :</strong> Soutien aux activités de planification et création d'un pôle administratif.</li>
+                        <li><strong>Reporting Stratégique :</strong> Animation des "cash calls" hebdomadaires et préparation de supports.</li>
+                        <li><strong>Rigueur Opérationnelle :</strong> Supervision des transactions pour la région FBL, réduisant l'exposition aux créances douteuses de 30%.</li>
+                    </ul>
                 </div>
 
-                <div class="trek-container">
-                    <svg class="trek-line" viewBox="0 0 100 1000" preserveAspectRatio="none">
-                        <path id="route" d="M50,0 Q80,250 50,500 T50,1000" fill="none" stroke="#2c4a3b" stroke-width="2"/>
-                    </svg>
+                <!-- LE SHERPA -->
+                <div class="timeline-node interactive glass-panel">
+                    <div class="node-date">May 2024 — Aug 2024</div>
+                    <h3 class="node-company">LE SHERPA Management <span class="loc">Kathmandu, Nepal</span></h3>
+                    <h4 class="node-role en">Operations Intern</h4>
+                    <h4 class="node-role fr">Stagiaire Opérations</h4>
+                    <ul class="node-details en">
+                        <li><strong>Planning & Support:</strong> Primary liaison between Swisscontact expats and local logistics teams.</li>
+                        <li><strong>Multicultural Interface:</strong> Coordinated cross-border communication and rigorously tracked KPIs.</li>
+                        <li><strong>Project Management:</strong> Adapted to remote work and collaborated within international teams.</li>
+                    </ul>
+                    <ul class="node-details fr">
+                        <li><strong>Planification et Support :</strong> Liaison principale entre les experts expatriés de Swisscontact et les équipes locales.</li>
+                        <li><strong>Interface Multiculturelle :</strong> Coordination de la communication transfrontalière et suivi des KPIs.</li>
+                        <li><strong>Suivi de projets :</strong> Adaptation au travail à distance et collaboration multiculturelle.</li>
+                    </ul>
+                </div>
 
-                    <div class="milestone right glass" id="ge-healthcare">
-                        <span class="date">Jul 2025 — Jan 2026</span>
-                        <h3 class="company">GE Healthcare</h3>
-                        <h4 class="role">FP&A Treasury Analyst</h4>
-                        <p class="desc">Supervised FBL transactions, reducing bad debt exposure by 30%. Led strategic cash calls in Buc, France.</p>
+                <!-- PianoPiano -->
+                <div class="timeline-node interactive glass-panel">
+                    <div class="node-date">Aug 2021 — Feb 2022</div>
+                    <h3 class="node-company">PianoPiano Express <span class="loc">Kathmandu, Nepal</span></h3>
+                    <h4 class="node-role en">Accounting Assistant</h4>
+                    <h4 class="node-role fr">Assistante comptable</h4>
+                    <ul class="node-details en">
+                        <li><strong>Merger Support:</strong> Assisted in budget preparation and review during a corporate merger.</li>
+                        <li><strong>Flow Management:</strong> Managed rigorous financial dossiers, improving recovery efficiency and cost control.</li>
+                    </ul>
+                    <ul class="node-details fr">
+                        <li><strong>Support à la Fusion :</strong> Assistance à la préparation et révision des budgets lors d'une fusion.</li>
+                        <li><strong>Gestion des Flux :</strong> Gestion des dossiers financiers, améliorant le recouvrement et le contrôle des coûts.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDUCATION & SKILLS -->
+        <section class="section summit">
+            <div class="grid-layout">
+                <!-- Education -->
+                <div class="glass-panel interactive">
+                    <h2 class="section-title en">The Summit (Education)</h2>
+                    <h2 class="section-title fr">Éducation</h2>
+                    
+                    <div class="edu-item">
+                        <span class="date">2023 — 2026</span>
+                        <h3>ESC Clermont <span class="loc">France</span></h3>
+                        <p class="en">Master in Management & MSc in Corporate Finance and Fintech (Dual Degree)</p>
+                        <p class="fr">Master en Management - Programme Grande École & MSc in Corporate Finance et Fintech</p>
                     </div>
-
-                    <div class="milestone left glass" id="le-sherpa">
-                        <span class="date">May 2024 — Aug 2024</span>
-                        <h3 class="company">LE SHERPA Management</h3>
-                        <h4 class="role">Operations Intern</h4>
-                        <p class="desc">Liaison between Swisscontact expats and local teams. Coordinated trans-border KPIs across Kathmandu.</p>
-                    </div>
-
-                    <div class="milestone right glass" id="piano-piano">
-                        <span class="date">Aug 2021 — Feb 2022</span>
-                        <h3 class="company">PianoPiano Express</h3>
-                        <h4 class="role">Accounting Assistant</h4>
-                        <p class="desc">Managed rigorous financial dossiers and navigated corporate merger budgeting for large-scale operations.</p>
+                    
+                    <div class="edu-item">
+                        <span class="date">2019 — 2022</span>
+                        <h3>Sikkim Manipal University <span class="loc">India</span></h3>
+                        <p class="en">Bachelor’s in Business Administration — Gold Medalist</p>
+                        <p class="fr">Bachelor’s in Business Administration — Médaille d’or</p>
                     </div>
                 </div>
-            </section>
 
-            <!-- Education Section: The Summit -->
-            <section class="summit panel">
-                <div class="summit-bg" style="background-image: url('assets/summit.png');"></div>
-                <div class="section-header">
-                    <span class="label">Education</span>
-                    <h2 class="section-title">The Summit</h2>
-                </div>
-                
-                <div class="summit-grid">
-                    <div class="summit-card reveal-up glass">
-                        <span class="year">2023 — 2026</span>
-                        <h3>ESC Clermont</h3>
-                        <p>Master in Management & MSc Corporate Finance</p>
+                <!-- Arsenal -->
+                <div class="glass-panel interactive">
+                    <h2 class="section-title en">Arsenal & Skills</h2>
+                    <h2 class="section-title fr">Compétences</h2>
+                    
+                    <div class="skill-group">
+                        <h4 class="en">Technical</h4>
+                        <h4 class="fr">Technique</h4>
+                        <p class="en">ERP, Power BI, Oracle Cloud, Management Control, Data Analysis, Procurement, Budget Forecasting, Chorus Pro, Peppol, Lean Methodology, IFRS.</p>
+                        <p class="fr">ERP, Power BI, Oracle Cloud, Contrôle de gestion, Analyse des données, Approvisionnement, Planification budgétaire, Chorus Pro, Peppol, Lean, IFRS.</p>
                     </div>
-                    <div class="summit-card reveal-up glass">
-                        <span class="year">2019 — 2022</span>
-                        <h3>Sikkim Manipal University</h3>
-                        <p>BBA — Gold Medalist</p>
+                    
+                    <div class="skill-group">
+                        <h4 class="en">Soft Skills</h4>
+                        <h4 class="fr">Compétences Générales</h4>
+                        <p class="en">Analytical, Dynamic, Leadership, Creativity, Problem-Solving.</p>
+                        <p class="fr">Analytique, dynamique, leadership, créativité, résolution de problèmes.</p>
                     </div>
-                </div>
-            </section>
 
-            <!-- Skills & Languages Section -->
-            <section class="arsenal panel">
-                <div class="arsenal-grid">
-                    <div class="arsenal-item reveal-left glass">
-                        <h3 class="arsenal-label">Strategic Arsenal</h3>
-                        <p class="arsenal-list">ERP • Power BI • IFRS • Lean Methodology</p>
+                    <div class="skill-group">
+                        <h4 class="en">Languages</h4>
+                        <h4 class="fr">Langues</h4>
+                        <p class="en">Nepali (Native), English (C2), Hindi (C2), French (B2).</p>
+                        <p class="fr">Népalais (Maternelle), Anglais (C2), Hindi (C2), Français (B2).</p>
                     </div>
-                    <div class="arsenal-item reveal-right glass">
-                        <h3 class="arsenal-label">Linguistic Range</h3>
-                        <p class="arsenal-list">Nepali (Native) • English (C2) • Hindi (C2) • French (B2)</p>
+
+                    <div class="skill-group">
+                        <h4 class="en">Interests & Volunteering</h4>
+                        <h4 class="fr">Intérêts & Bénévolat</h4>
+                        <p class="en">Photography, Cooking, Literature, Sustainability. Volunteered with Tsumo Maya Garchu & Pasang Lhamu Foundation for child education and health in Nepal.</p>
+                        <p class="fr">Photographie, Cuisine, Littérature, Durabilité. Bénévolat : Association Tsumo Maya Garchu et Fondation Pasang Lhamu au Népal (éducation et santé).</p>
                     </div>
                 </div>
-            </section>
+            </div>
+            
+            <div class="footer">
+                <h1 class="glitch-text" data-text="TRANSCEND.">TRANSCEND.</h1>
+                <p>© 2026 Rupika Chaulagain.</p>
+            </div>
+        </section>
 
-            <!-- Contact Section: The Basecamp -->
-            <footer class="basecamp panel">
-                <div class="contact-container">
-                    <h2 class="contact-title">Initiate Contact</h2>
-                    <a href="mailto:rupika.chaulagain@gmail.com" class="email-link magnetic">rupika.chaulagain@gmail.com</a>
-                    <div class="footer-bottom">
-                        <p>© 2025 Rupika Chaulagain. Built with Himalayan precision.</p>
-                    </div>
-                </div>
-            </footer>
-
-        </div>
-    </main>
+    </div>
 
     <script src="main.js"></script>
 </body>
