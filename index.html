@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rupika Chaulagain | Financial Strategist & Operations Expert</title>
+    <title>Rupika Chaulagain | The Himalayan Ascent</title>
     
     <!-- Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,11 +12,15 @@
     
     <link rel="stylesheet" href="style.css">
     
-    <!-- GSAP & ScrollTrigger -->
+    <!-- GSAP & Three.js Engines -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.156.1/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
+    <!-- Immersive 3D Background -->
+    <canvas id="canvas-3d"></canvas>
+
     <!-- Custom Cursor -->
     <div class="cursor-follower"></div>
     <div class="cursor-dot"></div>
@@ -26,13 +30,14 @@
             
             <!-- Hero Section: The Foothills -->
             <section class="hero panel">
+                <div class="hero-bg" style="background-image: url('assets/hero.png');"></div>
                 <div class="hero-container">
                     <p class="tagline fade-in">Based in Valence, France</p>
                     <h1 class="title split-text">Rupika<br>Chaulagain</h1>
                     <p class="subtitle fade-in">Orchestrating Financial Planning & Global Operations</p>
                     <div class="scroll-prompt fade-in">
                         <span class="line"></span>
-                        <span class="text">Scroll to Begin the Ascent</span>
+                        <span class="text">Begin the Ascent</span>
                     </div>
                 </div>
             </section>
@@ -49,21 +54,21 @@
                         <path id="route" d="M50,0 Q80,250 50,500 T50,1000" fill="none" stroke="#2c4a3b" stroke-width="2"/>
                     </svg>
 
-                    <div class="milestone right" id="ge-healthcare">
+                    <div class="milestone right glass" id="ge-healthcare">
                         <span class="date">Jul 2025 — Jan 2026</span>
                         <h3 class="company">GE Healthcare</h3>
                         <h4 class="role">FP&A Treasury Analyst</h4>
                         <p class="desc">Supervised FBL transactions, reducing bad debt exposure by 30%. Led strategic cash calls in Buc, France.</p>
                     </div>
 
-                    <div class="milestone left" id="le-sherpa">
+                    <div class="milestone left glass" id="le-sherpa">
                         <span class="date">May 2024 — Aug 2024</span>
                         <h3 class="company">LE SHERPA Management</h3>
                         <h4 class="role">Operations Intern</h4>
                         <p class="desc">Liaison between Swisscontact expats and local teams. Coordinated trans-border KPIs across Kathmandu.</p>
                     </div>
 
-                    <div class="milestone right" id="piano-piano">
+                    <div class="milestone right glass" id="piano-piano">
                         <span class="date">Aug 2021 — Feb 2022</span>
                         <h3 class="company">PianoPiano Express</h3>
                         <h4 class="role">Accounting Assistant</h4>
@@ -74,18 +79,19 @@
 
             <!-- Education Section: The Summit -->
             <section class="summit panel">
+                <div class="summit-bg" style="background-image: url('assets/summit.png');"></div>
                 <div class="section-header">
                     <span class="label">Education</span>
                     <h2 class="section-title">The Summit</h2>
                 </div>
                 
                 <div class="summit-grid">
-                    <div class="summit-card reveal-up">
+                    <div class="summit-card reveal-up glass">
                         <span class="year">2023 — 2026</span>
                         <h3>ESC Clermont</h3>
                         <p>Master in Management & MSc Corporate Finance</p>
                     </div>
-                    <div class="summit-card reveal-up">
+                    <div class="summit-card reveal-up glass">
                         <span class="year">2019 — 2022</span>
                         <h3>Sikkim Manipal University</h3>
                         <p>BBA — Gold Medalist</p>
@@ -96,11 +102,11 @@
             <!-- Skills & Languages Section -->
             <section class="arsenal panel">
                 <div class="arsenal-grid">
-                    <div class="arsenal-item reveal-left">
+                    <div class="arsenal-item reveal-left glass">
                         <h3 class="arsenal-label">Strategic Arsenal</h3>
                         <p class="arsenal-list">ERP • Power BI • IFRS • Lean Methodology</p>
                     </div>
-                    <div class="arsenal-item reveal-right">
+                    <div class="arsenal-item reveal-right glass">
                         <h3 class="arsenal-label">Linguistic Range</h3>
                         <p class="arsenal-list">Nepali (Native) • English (C2) • Hindi (C2) • French (B2)</p>
                     </div>
@@ -111,7 +117,7 @@
             <footer class="basecamp panel">
                 <div class="contact-container">
                     <h2 class="contact-title">Initiate Contact</h2>
-                    <a href="mailto:rupika.chaulagain@gmail.com" class="email-link">rupika.chaulagain@gmail.com</a>
+                    <a href="mailto:rupika.chaulagain@gmail.com" class="email-link magnetic">rupika.chaulagain@gmail.com</a>
                     <div class="footer-bottom">
                         <p>© 2025 Rupika Chaulagain. Built with Himalayan precision.</p>
                     </div>
