@@ -14,16 +14,16 @@ langBtns.forEach(btn => {
         langBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        // Play a glitch sound/effect on UI when switching
+        // Soft transition effect
         gsap.fromTo('.glass-panel', 
-            { opacity: 0.5, scale: 0.98, filter: "brightness(2)" },
-            { opacity: 1, scale: 1, filter: "brightness(1)", duration: 0.5, ease: "power4.out", stagger: 0.05 }
+            { opacity: 0.8, y: 10 },
+            { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.1 }
         );
     });
 });
 
 // ==========================================
-// 2. INSANE CURSOR PHYSICS
+// 2. ADVENTURE CURSOR PHYSICS
 // ==========================================
 const dot = document.querySelector('.cursor-dot');
 const ring = document.querySelector('.cursor-ring');
@@ -40,100 +40,100 @@ window.addEventListener('mousemove', (e) => {
 // Magnetic interactions
 document.querySelectorAll('.interactive').forEach(el => {
     el.addEventListener('mouseenter', () => {
-        gsap.to(ring, { width: 60, height: 60, background: 'rgba(74, 222, 128, 0.1)', duration: 0.3 });
+        gsap.to(ring, { width: 60, height: 60, background: 'rgba(255, 140, 105, 0.1)', borderColor: 'rgba(255, 140, 105, 0.8)', duration: 0.4, ease: "power2.out" });
+        gsap.to(dot, { scale: 1.5, duration: 0.3 });
     });
     el.addEventListener('mouseleave', () => {
-        gsap.to(ring, { width: 30, height: 30, background: 'transparent', duration: 0.3 });
+        gsap.to(ring, { width: 40, height: 40, background: 'transparent', borderColor: 'rgba(255, 140, 105, 0.4)', duration: 0.4, ease: "power2.out" });
+        gsap.to(dot, { scale: 1, duration: 0.3 });
     });
 });
 
 // ==========================================
-// 3. 3D CYBER-HIMALAYA ENGINE (Three.js)
+// 3. 3D FIREWATCH MOUNTAIN ENGINE (Three.js)
 // ==========================================
 const canvas = document.querySelector('#webgl-canvas');
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x050806, 0.015);
+// Deep sunset purple fog
+scene.fog = new THREE.FogExp2(0x1a1025, 0.012);
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// Procedural Mountain Terrain (Wireframe + Solid)
-const geometry = new THREE.PlaneGeometry(200, 200, 60, 60);
+// Procedural Stylized Terrain
+const geometry = new THREE.PlaneGeometry(300, 300, 80, 80);
 
-// Displace vertices to create mountains
+// Displace vertices and apply colors based on height
 const positionAttribute = geometry.attributes.position;
-const vertex = new THREE.Vector3();
+const colors = [];
+const colorObj = new THREE.Color();
+
+// Firewatch Color Palette for terrain
+const colorSnow = new THREE.Color(0xffffff); // White
+const colorRock = new THREE.Color(0xff8c69); // Sunset Orange
+const colorValley = new THREE.Color(0x2a1b38); // Deep Purple
 
 for (let i = 0; i < positionAttribute.count; i++) {
-    vertex.fromBufferAttribute(positionAttribute, i);
-    // Complex noise function using Math sin/cos to fake terrain
-    const dist = Math.sqrt(vertex.x * vertex.x + vertex.y * vertex.y);
-    const z = Math.sin(vertex.x * 0.1) * Math.cos(vertex.y * 0.1) * 10 
-            + Math.sin(vertex.x * 0.02) * 20
-            - dist * 0.2; // Push edges down
-            
-    // Central peak
-    const peak = Math.max(0, 30 - dist * 0.5) * 2;
+    const x = positionAttribute.getX(i);
+    const y = positionAttribute.getY(i);
     
-    positionAttribute.setZ(i, z + peak);
+    // Perlin-ish noise combination for rolling mountains
+    const dist = Math.sqrt(x*x + y*y);
+    const noise = Math.sin(x * 0.05) * Math.cos(y * 0.05) * 15 
+                + Math.sin(x * 0.02) * 25
+                + Math.cos(y * 0.03) * 10;
+    
+    // Create a central "valley" path
+    const valleyEffect = Math.max(0, 30 - Math.abs(x)) * 0.5;
+    const z = noise - valleyEffect;
+    
+    positionAttribute.setZ(i, z);
+
+    // Color mixing based on height (z)
+    // Max height approx 40, min approx -20
+    let normalizedHeight = (z + 20) / 60; 
+    normalizedHeight = Math.max(0, Math.min(1, normalizedHeight));
+
+    if (normalizedHeight > 0.7) {
+        // Snow capped
+        colorObj.lerpColors(colorRock, colorSnow, (normalizedHeight - 0.7) / 0.3);
+    } else {
+        // Valley to Rock
+        colorObj.lerpColors(colorValley, colorRock, normalizedHeight / 0.7);
+    }
+    
+    colors.push(colorObj.r, colorObj.g, colorObj.b);
 }
+
+geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 geometry.computeVertexNormals();
 
-const materialSolid = new THREE.MeshStandardMaterial({ 
-    color: 0x0a0f0c,
-    roughness: 0.8,
-    metalness: 0.2,
-    flatShading: true
+// Stylized Material
+const material = new THREE.MeshLambertMaterial({ 
+    vertexColors: true,
+    flatShading: true,
+    roughness: 1.0
 });
 
-const materialWire = new THREE.MeshBasicMaterial({ 
-    color: 0x4ade80,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.1
-});
-
-const terrainSolid = new THREE.Mesh(geometry, materialSolid);
-const terrainWire = new THREE.Mesh(geometry, materialWire);
-
-// Group terrain to rotate together
-const terrain = new THREE.Group();
-terrain.add(terrainSolid);
-terrain.add(terrainWire);
-
+const terrain = new THREE.Mesh(geometry, material);
 terrain.rotation.x = -Math.PI / 2;
-terrain.position.y = -20;
-terrain.position.z = -50;
+terrain.position.y = -25;
+terrain.position.z = -80;
 scene.add(terrain);
 
-// Snow / Speed Particles
-const particleCount = 2000;
-const particleGeo = new THREE.BufferGeometry();
-const particlePos = new Float32Array(particleCount * 3);
-
-for(let i=0; i < particleCount * 3; i++) {
-    particlePos[i] = (Math.random() - 0.5) * 200;
-}
-
-particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
-const particleMat = new THREE.PointsMaterial({
-    color: 0x4ade80,
-    size: 0.2,
-    transparent: true,
-    opacity: 0.6
-});
-
-const particles = new THREE.Points(particleGeo, particleMat);
-scene.add(particles);
-
-// Lights
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+// Golden Hour Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
 scene.add(ambientLight);
-const dirLight = new THREE.DirectionalLight(0x4ade80, 2);
-dirLight.position.set(0, 50, -20);
+
+const dirLight = new THREE.DirectionalLight(0xffeebb, 1.5); // Warm sun
+dirLight.position.set(50, 100, -50);
 scene.add(dirLight);
+
+const rimLight = new THREE.DirectionalLight(0xd45d79, 1.0); // Pink rim light
+rimLight.position.set(-50, 20, 50);
+scene.add(rimLight);
 
 // Setup Camera Start
 camera.position.set(0, 5, 20);
@@ -145,39 +145,42 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Render Loop
+// Render Loop & Animation
 let time = 0;
 function render() {
-    time += 0.01;
+    time += 0.005; // Slower, elegant flow
     
     // Physics cursor
-    dotPos.x += (mouse.x - dotPos.x) * 0.2;
-    dotPos.y += (mouse.y - dotPos.y) * 0.2;
-    ringPos.x += (mouse.x - ringPos.x) * 0.1;
-    ringPos.y += (mouse.y - ringPos.y) * 0.1;
+    dotPos.x += (mouse.x - dotPos.x) * 0.15;
+    dotPos.y += (mouse.y - dotPos.y) * 0.15;
+    ringPos.x += (mouse.x - ringPos.x) * 0.08;
+    ringPos.y += (mouse.y - ringPos.y) * 0.08;
     
     dot.style.transform = `translate(calc(${dotPos.x}px - 50%), calc(${dotPos.y}px - 50%))`;
     ring.style.transform = `translate(calc(${ringPos.x}px - 50%), calc(${ringPos.y}px - 50%))`;
 
-    // Dynamic camera parallax based on mouse
-    const targetCamX = (mouse.x - window.innerWidth / 2) * 0.05;
-    const targetCamY = (mouse.y - window.innerHeight / 2) * 0.05 + 5; // Base height
+    // Parallax camera movement
+    const targetCamX = (mouse.x - window.innerWidth / 2) * 0.03;
+    const targetCamY = (window.innerHeight / 2 - mouse.y) * 0.03 + 5; // Base height 5
     
     camera.position.x += (targetCamX - camera.position.x) * 0.05;
-    // Don't mess with Y too much, ScrollTrigger handles it mostly, but add slight wobble
+    camera.position.y += (targetCamY - camera.position.y) * 0.05;
     
-    // Terrain breathing
-    terrain.rotation.z = Math.sin(time * 0.5) * 0.05;
-    
-    // Particles flowing towards camera (Speed effect)
-    const positions = particles.geometry.attributes.position.array;
-    for(let i=2; i < particleCount * 3; i+=3) {
-        positions[i] += 0.5;
-        if(positions[i] > 50) {
-            positions[i] = -150;
-        }
+    // Beautiful flowing mountain animation (moving vertices)
+    const positions = terrain.geometry.attributes.position;
+    for (let i = 0; i < positions.count; i++) {
+        const x = positions.getX(i);
+        const y = positions.getY(i) + time * 50; // Scroll effect over time
+        
+        const noise = Math.sin(x * 0.05) * Math.cos(y * 0.05) * 15 
+                    + Math.sin(x * 0.02) * 25
+                    + Math.cos(y * 0.03) * 10;
+        
+        const valleyEffect = Math.max(0, 30 - Math.abs(x)) * 0.5;
+        positions.setZ(i, noise - valleyEffect);
     }
-    particles.geometry.attributes.position.needsUpdate = true;
+    positions.needsUpdate = true;
+    terrain.geometry.computeVertexNormals(); // Recompute for lighting
 
     renderer.render(scene, camera);
     requestAnimationFrame(render);
@@ -185,13 +188,12 @@ function render() {
 render();
 
 // ==========================================
-// 4. GSAP SCROLL & GAME-LIKE FEEL
+// 4. GSAP SCROLL & ADVENTURE FEEL
 // ==========================================
 
-// Animate 3D scene on scroll
-gsap.to(camera.position, {
-    z: -30, // Fly through the mountains
-    y: 15,  // Ascend
+// Fly through the terrain on scroll
+gsap.to(terrain.position, {
+    z: 50, // Move terrain towards camera
     ease: "none",
     scrollTrigger: {
         trigger: "#scroll-container",
@@ -201,40 +203,40 @@ gsap.to(camera.position, {
     }
 });
 
-// Rotate mountain aggressively as we climb
-gsap.to(terrain.rotation, {
-    x: -Math.PI / 2.2,
+// Tilt camera down as we reach the "summit"
+gsap.to(camera.rotation, {
+    x: -0.2,
     ease: "none",
     scrollTrigger: {
         trigger: "#scroll-container",
-        start: "top top",
+        start: "center top",
         end: "bottom bottom",
         scrub: 1
     }
 });
 
 // HUD Entry
-gsap.from(".hud", { y: -50, opacity: 0, duration: 1, delay: 0.5, ease: "power4.out" });
+gsap.from(".hud", { y: -50, opacity: 0, duration: 1.5, delay: 0.5, ease: "power4.out" });
 
 // Glass panels 3D tilt effect on hover
 document.querySelectorAll('.glass-panel').forEach(panel => {
     panel.addEventListener('mousemove', (e) => {
         const rect = panel.getBoundingClientRect();
-        const x = e.clientX - rect.left; // x position within the element.
-        const y = e.clientY - rect.top;  // y position within the element.
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
         
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
         
-        const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg
-        const rotateY = ((x - centerX) / centerX) * 10;
+        const rotateX = ((y - centerY) / centerY) * -5; // Soft 5 deg tilt
+        const rotateY = ((x - centerX) / centerX) * 5;
 
         gsap.to(panel, {
             rotationX: rotateX,
             rotationY: rotateY,
             transformPerspective: 1000,
             ease: "power2.out",
-            duration: 0.4
+            duration: 0.5
         });
     });
     
@@ -243,22 +245,22 @@ document.querySelectorAll('.glass-panel').forEach(panel => {
             rotationX: 0,
             rotationY: 0,
             ease: "power2.out",
-            duration: 0.6
+            duration: 0.8
         });
     });
 });
 
-// Stagger reveals for nodes
-gsap.utils.toArray('.timeline-node').forEach(node => {
+// Stagger reveals for timeline nodes
+gsap.utils.toArray('.timeline-node').forEach((node, i) => {
     gsap.from(node, {
         scrollTrigger: {
             trigger: node,
-            start: "top 80%",
+            start: "top 85%",
             toggleActions: "play none none reverse"
         },
-        x: -50,
+        y: 100,
         opacity: 0,
-        duration: 1,
-        ease: "back.out(1.7)"
+        duration: 1.2,
+        ease: "power3.out"
     });
 });
