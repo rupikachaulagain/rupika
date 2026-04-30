@@ -1,0 +1,101 @@
+:root {
+    --bg-color: #f4f4f0; /* Stone white */
+    --text-primary: #1a1c1a; /* Almost black */
+    --accent-green: #2c4a3b; /* Alpine green */
+    --accent-sand: #e8ded1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none; 
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+.cursor {
+    width: 20px;
+    height: 20px;
+    background-color: var(--accent-green);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: transform 0.1s ease-out;
+}
+
+.panel {
+    min-height: 100vh;
+    padding: 5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero { align-items: center; text-align: center; }
+
+.title {
+    font-size: clamp(4rem, 10vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin: 20px 0;
+}
+
+.subtitle { font-size: 1.5rem; color: var(--accent-green); }
+
+.pathway { position: relative; padding: 10vh 5vw; }
+
+.trek-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    transform: translateX(-50%);
+    z-index: -1;
+    opacity: 0.2;
+}
+
+.milestone {
+    width: 45%;
+    margin-bottom: 15vh;
+    padding: 2rem;
+    background: var(--accent-sand);
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+.milestone.left { align-self: flex-start; }
+.milestone.right { align-self: flex-end; margin-left: auto; }
+
+.date {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--accent-green);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 3rem 0; }
+
+.cta-button {
+    display: inline-block;
+    padding: 1rem 3rem;
+    background-color: var(--accent-green);
+    color: var(--bg-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    transition: transform 0.3s ease;
+}
+
+.cta-button:hover { transform: scale(1.05); }
