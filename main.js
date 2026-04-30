@@ -1,7 +1,7 @@
 gsap.registerPlugin(ScrollTrigger);
 
 // ==========================================
-// 1. LANGUAGE SWITCHER LOGIC
+// 1. LANGUAGE SWITCHER
 // ==========================================
 const langBtns = document.querySelectorAll('.lang-btn');
 const body = document.body;
@@ -15,9 +15,9 @@ langBtns.forEach(btn => {
         btn.classList.add('active');
 
         // Harsh snap transition
-        gsap.fromTo('.editorial-card', 
-            { x: -20, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.4, ease: "power4.out", stagger: 0.05 }
+        gsap.fromTo('.glass-panel', 
+            { filter: "brightness(1.5)", opacity: 0.5 },
+            { filter: "brightness(1)", opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.05 }
         );
     });
 });
@@ -32,98 +32,120 @@ let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
 let dotPos = { x: window.innerWidth/2, y: window.innerHeight/2 };
 let ringPos = { x: window.innerWidth/2, y: window.innerHeight/2 };
 
+// For parallax
+let normalizedMouse = { x: 0, y: 0 };
+
 window.addEventListener('mousemove', (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
+    
+    normalizedMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    normalizedMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 });
 
-// Magnetic interactions
 document.querySelectorAll('.interactive').forEach(el => {
     el.addEventListener('mouseenter', () => {
-        gsap.to(ring, { width: 60, height: 60, background: 'rgba(255, 140, 105, 0.2)', scale: 1.2, duration: 0.2, ease: "power2.out" });
+        gsap.to(ring, { width: 50, height: 50, background: 'rgba(31, 58, 77, 0.1)', duration: 0.2 });
         gsap.to(dot, { scale: 0, duration: 0.2 });
     });
     el.addEventListener('mouseleave', () => {
-        gsap.to(ring, { width: 40, height: 40, background: 'transparent', scale: 1, duration: 0.2, ease: "power2.out" });
+        gsap.to(ring, { width: 40, height: 40, background: 'transparent', duration: 0.2 });
         gsap.to(dot, { scale: 1, duration: 0.2 });
     });
 });
 
 // ==========================================
-// 3. 3D FIREWATCH MOUNTAIN ENGINE (Three.js)
+// 3. THREE.JS ARCHITECTURE: ALPINE BRUTALISM
 // ==========================================
 const canvas = document.querySelector('#webgl-canvas');
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x1a1025, 0.012);
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+// Set scene background to Blinding Snow
+scene.background = new THREE.Color(0xffffff);
+scene.fog = new THREE.FogExp2(0xffffff, 0.008);
+
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// Procedural Stylized Terrain
-const geometry = new THREE.PlaneGeometry(300, 300, 80, 80);
-const positionAttribute = geometry.attributes.position;
-const colors = [];
-const colorObj = new THREE.Color();
+// --- The Mountain (Low-Poly Plane) ---
+const mountainGeom = new THREE.PlaneGeometry(300, 300, 40, 40);
+const positions = mountainGeom.attributes.position;
 
-const colorSnow = new THREE.Color(0xffffff); 
-const colorRock = new THREE.Color(0xff8c69); 
-const colorValley = new THREE.Color(0x2a1b38); 
-
-for (let i = 0; i < positionAttribute.count; i++) {
-    const x = positionAttribute.getX(i);
-    const y = positionAttribute.getY(i);
+// Create jagged displacement
+for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i);
+    const y = positions.getY(i);
     
-    const dist = Math.sqrt(x*x + y*y);
-    const noise = Math.sin(x * 0.05) * Math.cos(y * 0.05) * 15 
-                + Math.sin(x * 0.02) * 25
-                + Math.cos(y * 0.03) * 10;
+    // High frequency noise for "jagged" look
+    const noise = Math.sin(x * 0.1) * Math.cos(y * 0.1) * 20 
+                + Math.sin(x * 0.05) * 30
+                + Math.cos(y * 0.07) * 15;
     
-    const valleyEffect = Math.max(0, 30 - Math.abs(x)) * 0.5;
-    const z = noise - valleyEffect;
+    // Create a central towering peak structure
+    const distFromCenter = Math.sqrt(x*x + y*y);
+    const peakBoost = Math.max(0, 100 - distFromCenter) * 0.8;
     
-    positionAttribute.setZ(i, z);
-
-    let normalizedHeight = (z + 20) / 60; 
-    normalizedHeight = Math.max(0, Math.min(1, normalizedHeight));
-
-    if (normalizedHeight > 0.7) {
-        colorObj.lerpColors(colorRock, colorSnow, (normalizedHeight - 0.7) / 0.3);
-    } else {
-        colorObj.lerpColors(colorValley, colorRock, normalizedHeight / 0.7);
-    }
-    
-    colors.push(colorObj.r, colorObj.g, colorObj.b);
+    positions.setZ(i, noise + peakBoost);
 }
+mountainGeom.computeVertexNormals();
 
-geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-geometry.computeVertexNormals();
-
-const material = new THREE.MeshLambertMaterial({ 
-    vertexColors: true,
+const mountainMat = new THREE.MeshStandardMaterial({ 
+    color: 0x1f3a4d, // Deep Frostbite Blue
     flatShading: true,
-    roughness: 1.0
+    roughness: 0.8,
+    metalness: 0.1
 });
 
-const terrain = new THREE.Mesh(geometry, material);
-terrain.rotation.x = -Math.PI / 2;
-terrain.position.y = -25;
-terrain.position.z = -80;
-scene.add(terrain);
+const mountain = new THREE.Mesh(mountainGeom, mountainMat);
+mountain.rotation.x = -Math.PI / 2;
+mountain.position.y = -60;
+mountain.position.z = -80;
+scene.add(mountain);
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+// --- The Blizzard (Particle System) ---
+const particleCount = 2000;
+const particleGeom = new THREE.BufferGeometry();
+const particlePos = new Float32Array(particleCount * 3);
+
+for(let i=0; i < particleCount * 3; i+=3) {
+    particlePos[i] = (Math.random() - 0.5) * 400; // x
+    particlePos[i+1] = Math.random() * 200 - 50;  // y
+    particlePos[i+2] = (Math.random() - 0.5) * 400; // z
+}
+
+particleGeom.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+const particleMat = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 1.5,
+    transparent: true,
+    opacity: 0.8
+});
+
+const blizzard = new THREE.Points(particleGeom, particleMat);
+scene.add(blizzard);
+
+// --- Lighting ---
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
 
-const dirLight = new THREE.DirectionalLight(0xffeebb, 1.5); 
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
 dirLight.position.set(50, 100, -50);
 scene.add(dirLight);
 
-const rimLight = new THREE.DirectionalLight(0xd45d79, 1.0); 
-rimLight.position.set(-50, 20, 50);
-scene.add(rimLight);
+const iceLight = new THREE.DirectionalLight(0xa4c8e1, 1.0); // Glacial Ice reflection
+iceLight.position.set(-50, 20, 50);
+scene.add(iceLight);
 
-camera.position.set(0, 5, 20);
+// --- Physics & Render Loop ---
+camera.position.set(0, 10, 50);
+
+// Parallax target variables
+let targetCamX = 0;
+let targetCamY = 10;
+let targetMountainRotX = -Math.PI / 2;
+let targetMountainRotY = 0;
 
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -131,11 +153,8 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-let time = 0;
 function render() {
-    time += 0.005; 
-    
-    // Snappy cursor
+    // Cursor Physics
     dotPos.x += (mouse.x - dotPos.x) * 0.3;
     dotPos.y += (mouse.y - dotPos.y) * 0.3;
     ringPos.x += (mouse.x - ringPos.x) * 0.15;
@@ -144,27 +163,29 @@ function render() {
     dot.style.transform = `translate(calc(${dotPos.x}px - 50%), calc(${dotPos.y}px - 50%))`;
     ring.style.transform = `translate(calc(${ringPos.x}px - 50%), calc(${ringPos.y}px - 50%))`;
 
-    // Parallax camera movement
-    const targetCamX = (mouse.x - window.innerWidth / 2) * 0.03;
-    const targetCamY = (window.innerHeight / 2 - mouse.y) * 0.03 + 5; 
-    
-    camera.position.x += (targetCamX - camera.position.x) * 0.05;
-    camera.position.y += (targetCamY - camera.position.y) * 0.05;
-    
-    const positions = terrain.geometry.attributes.position;
-    for (let i = 0; i < positions.count; i++) {
-        const x = positions.getX(i);
-        const y = positions.getY(i) + time * 50; 
-        
-        const noise = Math.sin(x * 0.05) * Math.cos(y * 0.05) * 15 
-                    + Math.sin(x * 0.02) * 25
-                    + Math.cos(y * 0.03) * 10;
-        
-        const valleyEffect = Math.max(0, 30 - Math.abs(x)) * 0.5;
-        positions.setZ(i, noise - valleyEffect);
+    // Blizzard Physics
+    const pPositions = blizzard.geometry.attributes.position.array;
+    for(let i=1; i < particleCount * 3; i+=3) {
+        pPositions[i] -= 0.5; // fall speed
+        pPositions[i-1] += Math.sin(pPositions[i]*0.01) * 0.2; // wind sway
+        if(pPositions[i] < -50) {
+            pPositions[i] = 150; // reset to top
+        }
     }
-    positions.needsUpdate = true;
-    terrain.geometry.computeVertexNormals();
+    blizzard.geometry.attributes.position.needsUpdate = true;
+
+    // Mouse Parallax Logic
+    targetMountainRotX = (-Math.PI / 2) + (normalizedMouse.y * 0.05);
+    targetMountainRotY = (normalizedMouse.x * 0.05);
+    
+    targetCamX = normalizedMouse.x * 5;
+
+    // Lerp Mountain Rotation
+    mountain.rotation.x += (targetMountainRotX - mountain.rotation.x) * 0.05;
+    mountain.rotation.z += (targetMountainRotY - mountain.rotation.z) * 0.05;
+    
+    // Lerp Camera X (Y is handled by GSAP)
+    camera.position.x += (targetCamX - camera.position.x) * 0.05;
 
     renderer.render(scene, camera);
     requestAnimationFrame(render);
@@ -172,11 +193,13 @@ function render() {
 render();
 
 // ==========================================
-// 4. GSAP SCROLL & ADVENTURE FEEL
+// 4. GSAP SCROLL ASCENT (The Mad Scientist Physics)
 // ==========================================
 
-gsap.to(terrain.position, {
-    z: 50, 
+// As user scrolls, camera ascends the mountain visually
+gsap.to(camera.position, {
+    y: 80, // Ascend
+    z: -10, // Move into the scene
     ease: "none",
     scrollTrigger: {
         trigger: "#scroll-container",
@@ -186,52 +209,64 @@ gsap.to(terrain.position, {
     }
 });
 
+// Tilt camera down slightly as we climb higher
 gsap.to(camera.rotation, {
-    x: -0.2,
+    x: -0.3,
     ease: "none",
     scrollTrigger: {
         trigger: "#scroll-container",
-        start: "center top",
+        start: "center center",
         end: "bottom bottom",
         scrub: 1
     }
 });
 
+// Intro Animation
 gsap.from(".hud", { y: -50, opacity: 0, duration: 1.5, delay: 0.5, ease: "power4.out" });
 
-// Asset Parallax
-gsap.to(".summit-asset", {
-    yPercent: 20,
-    ease: "none",
-    scrollTrigger: {
-        trigger: ".summit-asset-container",
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true
-    }
+// 3D Glass Panel Hover
+document.querySelectorAll('.glass-panel').forEach(panel => {
+    panel.addEventListener('mousemove', (e) => {
+        const rect = panel.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = ((y - centerY) / centerY) * -5;
+        const rotateY = ((x - centerX) / centerX) * 5;
+
+        gsap.to(panel, {
+            rotationX: rotateX,
+            rotationY: rotateY,
+            transformPerspective: 1000,
+            ease: "power2.out",
+            duration: 0.4
+        });
+    });
+    
+    panel.addEventListener('mouseleave', () => {
+        gsap.to(panel, {
+            rotationX: 0,
+            rotationY: 0,
+            ease: "power2.out",
+            duration: 0.8
+        });
+    });
 });
 
-gsap.from(".summit-massive-text", {
-    x: -200,
-    opacity: 0,
-    scrollTrigger: {
-        trigger: ".summit-asset-container",
-        start: "top center",
-        end: "center center",
-        scrub: 1
-    }
-});
-
-gsap.utils.toArray('.timeline-node').forEach((node, i) => {
+// Stagger reveals for timeline nodes
+gsap.utils.toArray('.timeline-node').forEach((node) => {
     gsap.from(node, {
         scrollTrigger: {
             trigger: node,
             start: "top 85%",
             toggleActions: "play none none reverse"
         },
-        x: -50,
+        y: 80,
         opacity: 0,
-        duration: 0.6,
+        duration: 1.0,
         ease: "power3.out"
     });
 });

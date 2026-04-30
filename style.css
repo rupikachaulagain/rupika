@@ -1,8 +1,8 @@
 :root {
-    --bg-color: #1a1025; /* Deep night purple */
-    --text-primary: #f8f0fc; /* Soft snow white */
-    --accent-primary: #ff8c69; /* Sunset peach/orange */
-    --accent-secondary: #d45d79; /* Rose/magenta midtone */
+    --bg-color: #ffffff; /* Blinding Snow */
+    --text-primary: #050a0f; /* Obsidian Crevasse */
+    --accent-ice: #a4c8e1; /* Glacial Ice */
+    --accent-brutal: #1f3a4d; /* Deep Frostbite Blue */
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
 }
@@ -15,33 +15,26 @@
 }
 
 body {
-    background-color: var(--bg-color);
+    background-color: transparent; /* Let canvas show */
     color: var(--text-primary);
     font-family: var(--font-body);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
 
+html {
+    background-color: var(--bg-color); /* Fallback */
+}
+
 /* Bilingual Logic */
 body.lang-en .fr { display: none !important; }
 body.lang-fr .en { display: none !important; }
 
-/* 3D Canvas */
-#webgl-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    pointer-events: none;
-}
-
-/* Custom Cursor Physics - Solid Orb */
+/* Custom Cursor Physics - Brutalist Ink */
 .cursor-dot {
-    width: 10px;
-    height: 10px;
-    background: var(--accent-primary);
+    width: 6px;
+    height: 6px;
+    background: var(--text-primary);
     border-radius: 50%;
     position: fixed;
     z-index: 10000;
@@ -52,13 +45,13 @@ body.lang-fr .en { display: none !important; }
 .cursor-ring {
     width: 40px;
     height: 40px;
-    border: 2px solid var(--accent-primary);
+    border: 2px solid var(--accent-brutal);
     border-radius: 50%;
     position: fixed;
     z-index: 9999;
     pointer-events: none;
     transform: translate(-50%, -50%);
-    transition: width 0.3s ease, height 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+    transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 /* HUD / UI */
@@ -71,31 +64,31 @@ body.lang-fr .en { display: none !important; }
 
 .lang-switcher {
     display: flex;
-    gap: 0;
-    background: var(--bg-color);
-    border: 2px solid var(--accent-primary);
-    padding: 0;
-    border-radius: 0;
-    box-shadow: 5px 5px 0px var(--accent-primary);
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 0.5rem;
+    border-radius: 8px; /* Brutal geometry */
 }
 
 .lang-btn {
     padding: 0.5rem 1.2rem;
+    border-radius: 4px;
     font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 1px;
-    color: var(--text-primary);
-    transition: all 0.2s ease;
-    border: none;
-    background: none;
+    color: var(--accent-brutal);
+    transition: all 0.3s ease;
+    cursor: none;
 }
 
 .lang-btn.active {
-    background: var(--accent-primary);
+    background: var(--accent-brutal);
     color: var(--bg-color);
 }
 
-/* Scroll Container & Editorial Panels */
+/* Scroll Container & Glass Panels */
 #scroll-container {
     position: relative;
     z-index: 1;
@@ -113,53 +106,43 @@ body.lang-fr .en { display: none !important; }
     justify-content: center;
 }
 
-/* Brutal Editorial Styling (No Glass) */
-.editorial-card {
-    background: var(--bg-color);
-    border: 2px solid var(--accent-secondary);
-    border-radius: 0;
+/* Alpine Brutalist Glassmorphism */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.4); /* Slightly opaque for bright bg */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 4px; /* Brutalist sharp */
     padding: 3.5rem;
-    box-shadow: 15px 15px 0px var(--accent-secondary);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
+    box-shadow: 0 20px 40px rgba(5, 10, 15, 0.05);
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
-.editorial-card::after {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    right: -5px;
-    bottom: -5px;
-    border: 1px solid var(--accent-primary);
-    pointer-events: none;
-    z-index: -1;
+.glass-panel:hover {
+    box-shadow: 0 30px 60px rgba(31, 58, 77, 0.1);
+    border-color: rgba(31, 58, 77, 0.3);
 }
 
-.editorial-card:hover {
-    transform: translate(-5px, -5px);
-    box-shadow: 20px 20px 0px var(--accent-primary);
-}
-
-/* Typography (Editorial) */
+/* Typography (Brutalist Alpine) */
 .section-title {
     font-family: var(--font-heading);
     font-size: clamp(2.5rem, 5vw, 4.5rem);
     text-transform: uppercase;
-    color: var(--accent-primary);
+    color: var(--accent-brutal);
     margin-bottom: 3rem;
     letter-spacing: 2px;
 }
 
 .title-main {
     font-family: var(--font-heading);
-    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-size: clamp(3.5rem, 10vw, 7.5rem);
     font-weight: 900;
     text-transform: uppercase;
     line-height: 0.9;
     margin-bottom: 2rem;
-    color: #fff;
-    letter-spacing: -2px;
+    color: var(--text-primary);
+    letter-spacing: -3px;
 }
 
 /* Content specifics */
@@ -169,12 +152,12 @@ body.lang-fr .en { display: none !important; }
 
 .contact-info {
     font-size: 1rem;
-    opacity: 0.9;
     margin-bottom: 2.5rem;
     line-height: 2;
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
+    font-weight: 600;
 }
 
 .contact-item {
@@ -184,23 +167,21 @@ body.lang-fr .en { display: none !important; }
 }
 
 .contact-info a {
-    color: var(--accent-primary);
+    color: var(--accent-brutal);
     text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-    background: var(--accent-secondary);
-    color: var(--bg-color);
-    padding: 2px 8px;
+    border-bottom: 2px solid var(--accent-ice);
+    transition: all 0.3s ease;
 }
 .contact-info a:hover {
-    background: var(--accent-primary);
+    background: var(--accent-brutal);
+    color: var(--bg-color);
 }
 
 .bio {
     font-size: 1.3rem;
     line-height: 1.7;
     margin-bottom: 4rem;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 /* Scroll Indicator */
@@ -212,7 +193,8 @@ body.lang-fr .en { display: none !important; }
     font-size: 0.9rem;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--accent-primary);
+    color: var(--text-primary);
+    font-weight: 700;
 }
 
 .scroll-indicator .arrow {
@@ -239,8 +221,9 @@ body.lang-fr .en { display: none !important; }
     left: 2rem;
     top: 0;
     height: 100%;
-    width: 4px;
-    background: var(--accent-secondary);
+    width: 2px;
+    background: var(--text-primary);
+    opacity: 0.2;
 }
 
 .timeline-node {
@@ -255,19 +238,15 @@ body.lang-fr .en { display: none !important; }
     top: 2rem;
     width: 24px;
     height: 24px;
-    background: var(--accent-primary);
-    border: 4px solid var(--bg-color);
-    box-shadow: 0 0 0 4px var(--accent-secondary);
+    background: var(--bg-color);
+    border: 4px solid var(--text-primary);
 }
 
 .node-date {
-    display: inline-block;
-    background: var(--accent-secondary);
-    color: var(--bg-color);
-    padding: 4px 12px;
+    color: var(--accent-brutal);
     font-family: var(--font-heading);
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
     letter-spacing: 1px;
 }
 
@@ -286,9 +265,9 @@ body.lang-fr .en { display: none !important; }
 
 .node-role {
     font-size: 1.3rem;
-    color: var(--accent-primary);
+    color: var(--text-primary);
     margin-bottom: 2rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .node-details {
@@ -299,48 +278,20 @@ body.lang-fr .en { display: none !important; }
     margin-bottom: 1.2rem;
     padding-left: 2rem;
     position: relative;
-    opacity: 0.9;
     line-height: 1.6;
+    color: rgba(5, 10, 15, 0.8);
 }
 
 .node-details li::before {
-    content: '■';
+    content: '▲';
     position: absolute;
     left: 0;
-    color: var(--accent-primary);
+    color: var(--accent-ice);
     font-size: 0.8rem;
     top: 0.2rem;
 }
 
-/* Summit Grid & Asset Integration */
-.summit-asset-container {
-    position: relative;
-    width: 100%;
-    margin-bottom: -10vh; /* Pull content up over the asset */
-    z-index: 1;
-}
-
-.summit-asset {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    display: block;
-    border: 4px solid var(--accent-secondary);
-    box-shadow: 20px 20px 0px var(--accent-primary);
-}
-
-.summit-massive-text {
-    position: absolute;
-    bottom: -2rem;
-    left: 2rem;
-    font-family: var(--font-heading);
-    font-size: clamp(4rem, 12vw, 10rem);
-    color: var(--text-primary);
-    text-shadow: 4px 4px 0px var(--bg-color), 8px 8px 0px var(--accent-primary);
-    z-index: 2;
-    pointer-events: none;
-}
-
+/* Summit Grid */
 .grid-layout {
     display: grid;
     grid-template-columns: 1fr;
@@ -359,10 +310,10 @@ body.lang-fr .en { display: none !important; }
 
 .edu-item .date {
     display: inline-block;
-    background: var(--accent-primary);
-    color: var(--bg-color);
-    padding: 4px 10px;
-    font-size: 1rem;
+    background: var(--accent-ice);
+    color: var(--text-primary);
+    padding: 2px 8px;
+    font-size: 0.9rem;
     font-weight: 700;
     margin-bottom: 1rem;
 }
@@ -375,14 +326,14 @@ body.lang-fr .en { display: none !important; }
 
 .edu-item p {
     font-size: 1.1rem;
-    opacity: 0.9;
+    color: rgba(5, 10, 15, 0.8);
 }
 
 .skill-group h4 {
     color: var(--bg-color);
-    background: var(--accent-secondary);
+    background: var(--text-primary);
     display: inline-block;
-    padding: 4px 10px;
+    padding: 4px 12px;
     margin-bottom: 1rem;
     font-size: 1.1rem;
     font-family: var(--font-heading);
@@ -393,12 +344,17 @@ body.lang-fr .en { display: none !important; }
 .skill-group p {
     font-size: 1.1rem;
     line-height: 1.7;
-    opacity: 0.9;
+    color: rgba(5, 10, 15, 0.8);
 }
 
 .footer {
     margin-top: 20vh;
     text-align: center;
-    border-top: 4px solid var(--accent-primary);
+    border-top: 2px solid rgba(0,0,0,0.1);
     padding-top: 2rem;
+}
+
+.footer p {
+    font-weight: 700;
+    opacity: 0.5;
 }
